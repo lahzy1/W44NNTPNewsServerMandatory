@@ -14,7 +14,8 @@ using System.Windows.Shapes;
 
 namespace W44NntpNewsServerMandatory.Model
 {
-    internal class NntpClient : INotifyPropertyChanged, INotifyCollectionChanged
+    //fha hvad - nej?
+    internal class NntpClient : INotifyPropertyChanged//, INotifyCollectionChanged
     {
         private TcpClient _client;
         private StreamReader _reader;
@@ -27,17 +28,19 @@ namespace W44NntpNewsServerMandatory.Model
 
         // Needed for the binding.
         public event PropertyChangedEventHandler? PropertyChanged;
-        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        //public event NotifyCollectionChangedEventHandler? CollectionChanged;    //fha nej
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        //fha see mine eksempler på Moodle, vi bruger CallerMemberName (hvorfor virtual ?)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName= "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedAction action)
-        {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action));
-        }
+        //fha nej nej
+        //protected virtual void OnCollectionChanged(NotifyCollectionChangedAction action)
+        //{
+          //  CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action));
+        //}
 
         //public List<string> newsGroupInfos; // Didn't work with a List.
 
@@ -49,7 +52,10 @@ namespace W44NntpNewsServerMandatory.Model
                 if (_newsGroupInfos != value)
                 {
                     _newsGroupInfos = value;
-                    OnCollectionChanged(NotifyCollectionChangedAction.Reset);
+                    //OnCollectionChanged(NotifyCollectionChangedAction.Reset);//fha hvad er det?
+
+                       //fha når setter kaldes så skal view informeres via et event
+                    OnPropertyChanged();
                 }
             }
         } 
@@ -64,7 +70,7 @@ namespace W44NntpNewsServerMandatory.Model
             _writer = new StreamWriter(stream) { AutoFlush = true };
 
             // Read the server's greeting
-            string responseLine = _reader.ReadLine();
+            string responseLine = _reader.ReadLine();    //fha der er en readlineAsync, vi har lige brugt 1,5 uger på at diskuttere multithreading og async!!
             Debug.WriteLine("Response: " + responseLine);
 
             // Send the username
@@ -104,7 +110,7 @@ namespace W44NntpNewsServerMandatory.Model
 
             int counter = 0;
 
-            while ((responseLine = _reader.ReadLine()) != null)
+            while ((responseLine = _reader.ReadLine()) != null && counter < 10)    //fha til test formål
             {
                 responseLine = _reader.ReadLine();
                 tempNewsGroupInfos.Add(responseLine);
@@ -114,6 +120,7 @@ namespace W44NntpNewsServerMandatory.Model
 
             Debug.WriteLine("Number of newsgroups: " + counter);
 
+            //fha det er faktisk en fin ide, så kan du kalde setter direkte
             NewsGroupInfos = tempNewsGroupInfos; // I used a temporary collection because I thought it might help with the binding performance.
         }
 
