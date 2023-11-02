@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
+//fha callermembername
+using System.Runtime.CompilerServices;
+
 namespace W44NntpNewsServerMandatory.Model
 {
     //fha hvad - nej?
