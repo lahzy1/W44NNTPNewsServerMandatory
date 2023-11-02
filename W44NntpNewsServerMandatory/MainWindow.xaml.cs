@@ -14,13 +14,18 @@ namespace W44NntpNewsServerMandatory
         public MainWindow()
         {
             InitializeComponent();
+
+            //fha
+            client = new NntpClient();
+            this.DataContext = client;
         }
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
             // Calls the method to save the server name, port and user name.
-            
-            client = new NntpClient();
+
+            //fha
+            //client = new NntpClient();
             client.Connect(serverTextBox.Text, int.Parse(portTextBox.Text), usernameTextBox.Text, passwordTextBox.Password);
 
             // If login succesful send the LIST command and display the list of newsgroups
