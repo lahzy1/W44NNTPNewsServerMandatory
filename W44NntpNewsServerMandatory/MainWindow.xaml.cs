@@ -22,8 +22,6 @@ namespace W44NntpNewsServerMandatory
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            // Calls the method to save the server name, port and user name.
-
             //fha
             //client = new NntpClient();
             client.Connect(serverTextBox.Text, int.Parse(portTextBox.Text), usernameTextBox.Text, passwordTextBox.Password);

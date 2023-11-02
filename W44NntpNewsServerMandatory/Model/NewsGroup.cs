@@ -21,7 +21,7 @@ namespace W44NntpNewsServerMandatory.Model
                 {
                     _newsGroupHeader = value;
                     //OnPropertyChanged(nameof(NewsGroupHeader));
-                    OnCollectionChanged(NotifyCollectionChangedAction.Add);
+                    //OnCollectionChanged(NotifyCollectionChangedAction.Add);
                 }
             }
         }
@@ -29,14 +29,9 @@ namespace W44NntpNewsServerMandatory.Model
         public event PropertyChangedEventHandler? PropertyChanged;
         public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedAction action)
-        {
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action));
         }
     }
 }

@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 namespace W44NntpNewsServerMandatory.Model
 {
     //fha hvad - nej?
-    internal class NntpClient : INotifyPropertyChanged//, INotifyCollectionChanged
+    internal class NntpClient : INotifyPropertyChanged
     {
         private TcpClient _client;
         private StreamReader _reader;
@@ -29,23 +29,14 @@ namespace W44NntpNewsServerMandatory.Model
 
         public bool IsAuthenticated = false;
 
-        // Needed for the binding.
+        #region Needed for the binding.
         public event PropertyChangedEventHandler? PropertyChanged;
-        //public event NotifyCollectionChangedEventHandler? CollectionChanged;    //fha nej
 
-        //fha see mine eksempler på Moodle, vi bruger CallerMemberName (hvorfor virtual ?)
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName= "")
+        //fha see mine eksempler på Moodle, vi bruger CallerMemberName (hvorfor virtual?) // virtual blev bare foreslogt, da jeg ledte efter en løsning. Har ikke kigget nærmere på det keyword.
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        //fha nej nej
-        //protected virtual void OnCollectionChanged(NotifyCollectionChangedAction action)
-        //{
-          //  CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action));
-        //}
-
-        //public List<string> newsGroupInfos; // Didn't work with a List.
 
         public ObservableCollection<string> NewsGroupInfos
         {
@@ -55,13 +46,12 @@ namespace W44NntpNewsServerMandatory.Model
                 if (_newsGroupInfos != value)
                 {
                     _newsGroupInfos = value;
-                    //OnCollectionChanged(NotifyCollectionChangedAction.Reset);//fha hvad er det?
-
-                       //fha når setter kaldes så skal view informeres via et event
-                    OnPropertyChanged();
+                    //fha når setter kaldes så skal view informeres via et event
+                    OnPropertyChanged(); // 
                 }
             }
         } 
+        #endregion
 
         public void Connect(string server, int port, string username, string password)
         {
@@ -73,7 +63,7 @@ namespace W44NntpNewsServerMandatory.Model
             _writer = new StreamWriter(stream) { AutoFlush = true };
 
             // Read the server's greeting
-            string responseLine = _reader.ReadLine();    //fha der er en readlineAsync, vi har lige brugt 1,5 uger på at diskuttere multithreading og async!!
+            string responseLine = _reader.ReadLine(); //fha der er en readlineAsync, vi har lige brugt 1,5 uger på at diskuttere multithreading og async!!
             Debug.WriteLine("Response: " + responseLine);
 
             // Send the username
@@ -92,28 +82,23 @@ namespace W44NntpNewsServerMandatory.Model
                 IsAuthenticated = true;
             }
 
-/*            _writer.WriteLine("LIST");
-            response = _reader.ReadLine();
-            Debug.WriteLine("Response: " + response);
-
-            response = _reader.ReadLine();
-            Debug.WriteLine("Response: " + response);*/
-
             SaveNewsGroupsAsStrings();
+
+            // Testing methods
+            GroupCommand("dk.test"); // Returns all the newsgroups similar to LIST. Why?
+            //GetNewsGroupArticles("dk.test"); // FIXME: It just lists more newsgroups. Why? It should just give the article numbers from the group.
         }
 
         public void SaveNewsGroupsAsStrings()
         {
-            //newsGroupInfos = new List<string>();
             ObservableCollection<string> tempNewsGroupInfos = new ObservableCollection<string>();
 
-            // Send the LIST command and saves the newsgroups returned from the server in the NewsGroups array.
             _writer.WriteLine("LIST");
             string responseLine;
 
             int counter = 0;
 
-            while ((responseLine = _reader.ReadLine()) != null && counter < 10)    //fha til test formål
+            while ((responseLine = _reader.ReadLine()) != null && counter < 10)
             {
                 responseLine = _reader.ReadLine();
                 tempNewsGroupInfos.Add(responseLine);
@@ -123,11 +108,51 @@ namespace W44NntpNewsServerMandatory.Model
 
             Debug.WriteLine("Number of newsgroups: " + counter);
 
+            //_writer.Flush(); // Did not help to fix GroupCommand() and GetNewsGroupArticles().
+
             //fha det er faktisk en fin ide, så kan du kalde setter direkte
             NewsGroupInfos = tempNewsGroupInfos; // I used a temporary collection because I thought it might help with the binding performance.
         }
 
-/*        public void PopulateListBox()
+        public void GroupCommand(string newsGroup)
+        {
+            _writer.WriteLine("GROUP " + newsGroup);
+            string responseLine = _reader.ReadLine();
+
+            int counter = 0;
+            while ((responseLine = _reader.ReadLine()) != null && counter < 10) // For testing. Remove later.
+            {
+                Debug.WriteLine("Response: " + responseLine);
+                counter++;
+            }
+        }
+
+        // Sends the LISTGROUP <group> command to the server.
+        public void GetNewsGroupArticles(string newsGroup)
+        {
+            _writer.WriteLine("LISTGROUP " + newsGroup);
+            string responseLine;
+
+            int counter = 0;
+
+            while ((responseLine = _reader.ReadLine()) != null && counter < 10)
+            {
+                responseLine = _reader.ReadLine();
+                Debug.WriteLine("Response: " + responseLine);
+                counter++;
+            }
+
+            Debug.WriteLine("Number of articles: " + counter);
+        }
+
+        // Sends the XHDR Subject <article range> command to the server.
+        public void GetNewsGroupHeadlines(string newsGroup, int start, int end)
+        {
+            
+        }
+
+
+        /*public void PopulateListBox()
         {
             // Populate the newsGroupsListBox with the NewsGroupInfos List.
             foreach (string item in NewsGroupInfos)

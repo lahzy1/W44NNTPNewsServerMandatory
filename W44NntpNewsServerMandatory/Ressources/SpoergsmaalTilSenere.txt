@@ -1,0 +1,1 @@
+﻿Hvorfor skal det være OnPropertChanged og ikke OnCollectionChanged hvor det dog er en Collection af strings der ændrer sig?
