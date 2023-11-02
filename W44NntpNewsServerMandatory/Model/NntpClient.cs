@@ -100,18 +100,21 @@ namespace W44NntpNewsServerMandatory.Model
 
             // Send the LIST command and saves the newsgroups returned from the server in the NewsGroups array.
             _writer.WriteLine("LIST");
-            string responseLine = _reader.ReadLine();
-            tempNewsGroupInfos.Add(responseLine);
-            Debug.WriteLine("Response: " + responseLine); // FIXME: Does not show any newsgroups.
+            string responseLine;
+
+            int counter = 0;
 
             while ((responseLine = _reader.ReadLine()) != null)
             {
-
+                responseLine = _reader.ReadLine();
+                tempNewsGroupInfos.Add(responseLine);
+                Debug.WriteLine("Response: " + responseLine);
+                counter++;
             }
 
+            Debug.WriteLine("Number of newsgroups: " + counter);
 
-
-                NewsGroupInfos = tempNewsGroupInfos; // I used a temporary collection because I thought it might help with the binding performance.
+            NewsGroupInfos = tempNewsGroupInfos; // I used a temporary collection because I thought it might help with the binding performance.
         }
 
 /*        public void PopulateListBox()
