@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace W44NntpNewsServerMandatory.Model
 {
-    internal class NewsGroup : INotifyCollectionChanged, INotifyPropertyChanged
+    internal class NewsGroup : INotifyPropertyChanged
     {
         private string _newsGroupHeader;
 
@@ -21,13 +21,11 @@ namespace W44NntpNewsServerMandatory.Model
                 {
                     _newsGroupHeader = value;
                     //OnPropertyChanged(nameof(NewsGroupHeader));
-                    //OnCollectionChanged(NotifyCollectionChangedAction.Add);
                 }
             }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
