@@ -91,7 +91,9 @@ namespace W44NntpNewsServerMandatory.Model
                 IsAuthenticated = true;
             }
 
-            await SaveNewsGroupsAsStringsAsync();
+            //await _writer.FlushAsync();
+            await SaveNewsGroupsAsStringsAsync(); // FIXME: Noget i denne metode gør, at GroupCommand() ikke giver det forventede resultat. Hvorfor?
+
 
             // Testing methods
             await GroupCommand("dk.test"); // Returns all the newsgroups similar to LIST. Why?
@@ -105,7 +107,6 @@ namespace W44NntpNewsServerMandatory.Model
         public async Task SaveNewsGroupsAsStringsAsync()
         {
             ObservableCollection<string> tempNewsGroupInfos = new ObservableCollection<string>();
-
             await _writer.WriteLineAsync("LIST");
             string responseLine;
 
@@ -136,12 +137,14 @@ namespace W44NntpNewsServerMandatory.Model
             await _writer.WriteLineAsync("GROUP " + newsGroup);
             string responseLine = await _reader.ReadLineAsync();
 
-            int counter = 0;
+            Debug.WriteLine("Response: " + responseLine);
+
+            /*int counter = 0;
             while ((responseLine = await _reader.ReadLineAsync()) != null && counter < 10) // For testing. Remove later.
             {
                 Debug.WriteLine("Response: " + responseLine);
                 counter++;
-            }
+            }*/
         }
 
         // Sends the LISTGROUP <group> command to the server.

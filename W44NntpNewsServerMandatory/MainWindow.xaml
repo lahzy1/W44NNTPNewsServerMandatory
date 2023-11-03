@@ -20,12 +20,11 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Username:"/>
-                <TextBox x:Name="usernameTextBox" Text="larpre01@easv365.dk" Width="144"/> <!-- Remove later -->
+                <TextBox x:Name="usernameTextBox" Text="" Width="144"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label Content="Password:"/>
-                <PasswordBox x:Name="passwordTextBox" Width="144" Password="c973e3"/>
-                <!-- Remove later -->
+                <PasswordBox x:Name="passwordTextBox" Width="144" Password=""/>
             </StackPanel>
             <Button x:Name="loginButton" Width="55" Content="Login" Click="loginButton_Click"/>
         </StackPanel>
